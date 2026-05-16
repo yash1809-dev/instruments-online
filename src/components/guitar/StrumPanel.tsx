@@ -6,7 +6,7 @@ import { useGuitarStore } from '@/store';
 import { useAudioEngine, useStringVibration } from '@/hooks/useAudio';
 import { TouchEngine } from '@/engine/touch/TouchEngine';
 import { chordToAudioNotes } from '@/engine/audio/chords';
-import type { GestureEvent, StringNumber } from '@/types';
+import type { GestureEvent, StringNumber, FretNumber } from '@/types';
 
 // ─────────────────────────────────────────────────────────
 //  String colors (low E → high e)
@@ -299,7 +299,7 @@ export function GuitarStrumPanel({ className }: GuitarStrumPanelProps) {
   const handleStrum = useCallback(async (direction: 'down' | 'up', velocity: number) => {
     await ensureAudio();
 
-    let notes: Array<{ string: number; fret: number; velocity: number }> = [];
+    let notes: Array<{ string: StringNumber; fret: FretNumber; velocity: number }> = [];
 
     if (activeChord) {
       notes = chordToAudioNotes(activeChord, velocity);
@@ -307,11 +307,11 @@ export function GuitarStrumPanel({ className }: GuitarStrumPanelProps) {
       // Open strings or current fretting
       notes = fretting.map((fret, s) => {
         if (fret < 0) return null;
-        return { string: s, fret: Math.max(0, fret), velocity: velocity * (0.9 + Math.random() * 0.1) };
+        return { string: s as StringNumber, fret: Math.max(0, fret) as FretNumber, velocity: velocity * (0.9 + Math.random() * 0.1) };
       }).filter(Boolean) as typeof notes;
 
       if (notes.length === 0) {
-        notes = Array.from({ length: 6 }, (_, s) => ({ string: s, fret: 0, velocity }));
+        notes = Array.from({ length: 6 }, (_, s) => ({ string: s as StringNumber, fret: 0 as FretNumber, velocity }));
       }
     }
 

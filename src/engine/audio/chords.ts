@@ -1,4 +1,4 @@
-import type { ChordDefinition, StringNote } from '@/types';
+import type { ChordDefinition, StringNote, StringNumber, FretNumber } from '@/types';
 
 // ─────────────────────────────────────────────────────────
 //  Chord Library — standard acoustic guitar chord shapes
@@ -207,8 +207,8 @@ export const CHORD_PROGRESSIONS: Record<string, string[]> = {
 export function chordToAudioNotes(
   chord: ChordDefinition,
   velocity: number
-): Array<{ string: number; fret: number; velocity: number }> {
-  const notes: Array<{ string: number; fret: number; velocity: number }> = [];
+): Array<{ string: StringNumber; fret: FretNumber; velocity: number }> {
+  const notes: Array<{ string: StringNumber; fret: FretNumber; velocity: number }> = [];
   
   for (let s = 0; s < 6; s++) {
     if (chord.muted[s]) continue;
@@ -219,7 +219,7 @@ export function chordToAudioNotes(
     
     // Slight velocity variation per string for realism
     const variation = 0.92 + Math.random() * 0.08;
-    notes.push({ string: s, fret, velocity: Math.min(1, velocity * variation) });
+    notes.push({ string: s as StringNumber, fret: fret as FretNumber, velocity: Math.min(1, velocity * variation) });
   }
   
   return notes;
